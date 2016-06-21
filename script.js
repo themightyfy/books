@@ -1,6 +1,4 @@
-(function() {
-
-  
+(function() {  
 
   var app = angular.module("bookViewer", [])
 
@@ -12,9 +10,24 @@
     $http.defaults.headers.common["Accept"] = "application/json";
     $http.defaults.headers.common["Content-Type"] = "application/json";
 
+    var $scope.order = function(book_id){
+      $http.get("http://localhost:3000/api/order?book_id="+book_id+"&user_id="+$scope.user.id)
+        .then(onRepose, onError);
+    }
+
+    var $scope.pay = function(){
+      $http.get("http://localhost:3000/api/pay?&user_id="+$scope.user.id)
+        .then(onRepose, onError);
+    }
+
+    var $scope.restock = function(isbn,price,quantity){
+      $http.get("http://localhost:3000/api/fill_stock?&isbn="+isbn+"&price="+price+"&quantity="+quantity)
+        .then(onRepose, onError);
+    }
+
     var onUserComplete = function(response) {
       $scope.user = response.data;
-      $http.get($scope.user.repos_url)
+      $http.get("http://localhost:3000/api/all_books")
         .then(onRepose, onError);
     };
     
@@ -23,7 +36,7 @@
     }
     
     var onRepose = function(response){
-      $scope.repos = response.data;
+      $scope.books = response.data;
     }
 
     var onError = function(reason) {
